@@ -1,0 +1,78 @@
+<div class="recipe-section">
+
+      <!-- Recipe Card 1 -->
+      <div class="recipe-card">
+        <h2>Spaghetti Bolognese</h2>
+        <label><input type="checkbox" class="ingredient" data-item="Pasta" data-group="Pantry"> Pasta</label>
+        <label><input type="checkbox" class="ingredient" data-item="Minced Beef" data-group="Meat"> Minced Beef</label>
+        <label><input type="checkbox" class="ingredient" data-item="Tomato Sauce" data-group="Pantry"> Tomato Sauce</label>
+      </div>
+
+      <!-- Recipe Card 2 -->
+      <div class="recipe-card">
+        <h2>Chicken Salad</h2>
+        <label><input type="checkbox" class="ingredient" data-item="Chicken Breast" data-group="Meat"> Chicken Breast</label>
+        <label><input type="checkbox" class="ingredient" data-item="Lettuce" data-group="Produce"> Lettuce</label>
+        <label><input type="checkbox" class="ingredient" data-item="Tomatoes" data-group="Produce"> Tomatoes</label>
+      </div>
+
+    </div>
+
+    <!-- Interactive Action Buttons -->
+    <div class="buttons">
+      <button onclick="generateShoppingList()">Generate Shopping List</button>
+      <button onclick="window.print()" style="background: #2c3e50;">Print List</button>
+    </div>
+
+    <!-- Shopping List Display Area -->
+    <div class="shopping-list" id="shoppingListContainer"></div>
+
+  </div>
+
+  <!-- JAVASCRIPT FOR LOGIC -->
+  <script>
+    function generateShoppingList() {
+      const checkedIngredients = document.querySelectorAll('.ingredient:checked');
+      const container = document.getElementById('shoppingListContainer');
+      container.innerHTML = ''; // Clear previous list
+
+      if (checkedIngredients.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:gray;">No ingredients selected yet!</p>';
+        return;
+      }
+
+      // Group items by category (Produce, Meat, Pantry, etc.)
+      const groupedItems = {};
+      checkedIngredients.forEach(input => {
+        const item = input.getAttribute('data-item');
+        const group = input.getAttribute('data-group');
+
+        if (!groupedItems[group]) {
+          groupedItems[group] = [];
+        }
+        if (!groupedItems[group].includes(item)) {
+          groupedItems[group].push(item);
+        }
+      });
+
+      // Render grouped lists to the UI
+      for (const groupName in groupedItems) {
+        const groupDiv = document.createElement('div');
+        groupDiv.className = 'group';
+
+        let itemsHtml = `<div class="group-title">${groupName}</div><div class="group-items">`;
+        groupedItems[groupName].forEach(item => {
+          itemsHtml += `
+            <label>
+              <input type="checkbox" onclick="this.parentElement.classList.toggle('checked')"> ${item}
+            </label>`;
+        });
+        itemsHtml += '</div>';
+
+        groupDiv.innerHTML = itemsHtml;
+        container.appendChild(groupDiv);
+      }
+    }
+  </script>
+</body>
+</html>
